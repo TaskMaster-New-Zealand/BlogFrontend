@@ -26,17 +26,14 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
-      open: true,
-      cors: true,
-      // Configuración de proxy para API de Django (para desarrollo)
-      proxy: {
-        '/api': {
-          target: env.VITE_API_BASE_URL || 'http://localhost:8000',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
+      /*proxy: {
+         '/api': {
+            target: 'https://blog-backend-wheat-one.vercel.app',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+          },
+      },*/
+
     },
     build: {
       outDir: 'dist',

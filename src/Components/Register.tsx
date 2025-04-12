@@ -1,67 +1,147 @@
 import React, { useState } from 'react';
 import './Register.css';
+import axios, { AxiosError } from 'axios';
+import {BaseUrl} from "../../constants";
 
-interface FormData {
-  username: string;
-  password: string;
-}
 
 const Register: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({
-        username: '',
-        password: '',
-    });
+  const [Err, setErr] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Add your registration logic here
-    };
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
 
-    return(
-        <div className="register-container">
-            <div className="register-card">
-                <h1>Create an account</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input 
-                            type="text"
-                            placeholder="Insert a username"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input 
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Create a password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
 
-                    <button type="submit" className="submit-btn">Create Account</button>
-                </form>
-            </div>
-        </div>
-    );
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        BaseUrl +'/api/register/',
+        {
+          username: username,
+          email: email,
+          password: password,
+          first_name: first_name,
+          last_name: last_name
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      console.log(response.data);
+      setErr('✅ Registration successful!');
+    } catch (error) {
+    const err = error as AxiosError;
+
+    if (err.response) {
+      console.error('Error response:', err.response.data);
+      setErr(`❌ Server error ${err.response.status}: ${JSON.stringify(err.response.data)}`);
+    } else if (err.request) {
+      console.error('No response received:', err.request);
+      setErr('❌ No response from server.');
+    } else {
+      console.error('Unexpected error:', err.message);
+      setErr(`❌ Unexpected error: ${err.message}`);
+    }
+    }
+  };
+
+  return (
+    <div className="register-container">
+      <div className="register-card">
+        <h1>Create an account</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              placeholder="Insert a username"
+              id="username"
+              name="username"
+              onChange={handleUsernameChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Create a password"
+              onChange={handlePasswordChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Insert an email"
+              onChange={handleEmailChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="first_name">First Name</label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              placeholder="Insert your first name"
+              onChange={handleFirstNameChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="last_name">Last Name</label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              placeholder="Insert your last name"
+              onChange={handleLastNameChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className="submit-btn">
+            Create Account
+          </button>
+          <p>{Err}</p>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export { Register };
