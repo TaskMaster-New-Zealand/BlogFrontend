@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": true,
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node16",  // Change this to "node16"
     "lib": [
       "DOM",
       "DOM.Iterable",
