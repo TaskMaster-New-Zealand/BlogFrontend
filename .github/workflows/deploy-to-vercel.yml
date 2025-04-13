@@ -32,10 +32,11 @@ jobs:
           git clone https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/kozawanz/BlogFrontStage.git target-repo
 
       # Sync entire project (excluding .git) to target repo
-      - name: Sync project to target repo
+      - name: Sync entire project to target repo
         run: |
-          rsync -av --exclude='.git' --exclude='node_modules' --delete ./ target-repo/
+          rsync -av --exclude='.git' --exclude='node_modules' --delete ./ target-repo/ || true
           cd target-repo
           git add .
-          git commit -m "🚀 Auto-deploy full project to stage repo ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
+          git commit -m "🚀 Auto-deploy full project to stage ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
           git push origin main
+
