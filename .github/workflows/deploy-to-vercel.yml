@@ -31,11 +31,11 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/kozawanz/BlogFrontStage.git target-repo
 
-      # Sync build folder to target repo
-      - name: Sync build folder to target repo
+      # Sync entire project (excluding .git) to target repo
+      - name: Sync project to target repo
         run: |
-          rsync -av --exclude='.git' --delete ./build/ target-repo/
+          rsync -av --exclude='.git' --delete ./ target-repo/
           cd target-repo
           git add .
-          git commit -m "🚀 Auto-deploy build folder from private repo ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
+          git commit -m "🚀 Auto-deploy full project to stage repo ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
           git push origin main
