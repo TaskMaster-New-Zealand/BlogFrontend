@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Register.css';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import {BaseUrl} from "../constants";
 
 
