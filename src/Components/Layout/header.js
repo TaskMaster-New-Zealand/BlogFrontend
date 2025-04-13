@@ -27,7 +27,6 @@ const Header: React.FC = () => {
                       <Link to="/createpost" className="btn btn-login">Create Post</Link> &nbsp;
                       <a href="/login" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="btn btn-login">Logout</a>
                     </li>
-
                 </>
               ) : (
                 <>
