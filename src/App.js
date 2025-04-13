@@ -1,6 +1,4 @@
-import { useState } from 'react'
 import './App.css'
-import { LayoutRouteProps } from 'react-router-dom'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import { Register } from "./Components/Register";
 import { Home } from "./Components/Home";
