@@ -15,8 +15,10 @@ const ListPosts = () => {
   const [actionLoading, setActionLoading] = useState({})
   const Token = localStorage.getItem("Token")
 
+ // eslint-disable-next-line
   useEffect(() => {
     fetchPosts(BaseUrl + "/api/posts/")
+     // eslint-disable-next-line
   }, [])
 
   const fetchPosts = (url) => {
