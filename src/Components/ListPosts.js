@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { BaseUrl } from "../constants"
 import "./ListPosts.css"
-import { ThumbsUp, ThumbsDown, Calendar, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Calendar, User, ChevronLeft, ChevronRight } from "lucide-react"
 
 const ListPosts = () => {
+  // Initialize posts as an empty array to prevent "slice is not a function" error
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -15,13 +16,17 @@ const ListPosts = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
-  const [postsPerPage] = useState(6)
+  const [postsPerPage] = useState(5)
   const [totalPosts, setTotalPosts] = useState(0)
 
+  // eslint-disable-next-line
   useEffect(() => {
+    // eslint-disable-next-line
     fetchPosts(BaseUrl + "/api/posts/")
+     // eslint-disable-next-line
   }, [])
 
+  // eslint-disable-next-line
   const fetchPosts = (url) => {
     setLoading(true)
     setError(null)
@@ -43,9 +48,11 @@ const ListPosts = () => {
       .request(config)
       .then((response) => {
         console.log("Posts data:", response.data)
-        // Direct array of posts, not nested in a results property
-        setPosts(response.data)
-        setTotalPosts(response.data.length)
+
+        // Ensure posts is always an array
+        const postsData = Array.isArray(response.data) ? response.data : []
+        setPosts(postsData)
+        setTotalPosts(postsData.length)
         setLoading(false)
       })
       .catch((error) => {
@@ -61,7 +68,7 @@ const ListPosts = () => {
       return
     }
 
-    setActionLoading(prev => ({ ...prev, [`like-${post.id}`]: true }))
+    setActionLoading((prev) => ({ ...prev, [`like-${post.id}`]: true }))
 
     const config = {
       method: "post",
@@ -81,7 +88,7 @@ const ListPosts = () => {
         // If the API returns a single updated post
         if (response.data && response.data.id) {
           const updatedPost = response.data
-          setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
+          setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)))
         }
         // If the API returns all posts as an array
         else if (Array.isArray(response.data)) {
@@ -89,20 +96,22 @@ const ListPosts = () => {
         }
         // Fallback to manual update
         else {
-          setPosts(posts.map(p => {
-            if (p.id === post.id) {
-              const wasLiked = p.user_has_liked
-              return {
-                ...p,
-                like_count: wasLiked ? p.like_count - 1 : p.like_count + 1,
-                user_has_liked: !wasLiked,
-                // If user is liking and had previously disliked, remove the dislike
-                dislike_count: p.user_has_disliked ? p.dislike_count - 1 : p.dislike_count,
-                user_has_disliked: p.user_has_disliked ? false : p.user_has_disliked,
+          setPosts(
+            posts.map((p) => {
+              if (p.id === post.id) {
+                const wasLiked = p.user_has_liked
+                return {
+                  ...p,
+                  like_count: wasLiked ? p.like_count - 1 : p.like_count + 1,
+                  user_has_liked: !wasLiked,
+                  // If user is liking and had previously disliked, remove the dislike
+                  dislike_count: p.user_has_disliked ? p.dislike_count - 1 : p.dislike_count,
+                  user_has_disliked: p.user_has_disliked ? false : p.user_has_disliked,
+                }
               }
-            }
-            return p
-          }))
+              return p
+            }),
+          )
         }
       })
       .catch((error) => {
@@ -110,7 +119,7 @@ const ListPosts = () => {
         alert(error.response?.data?.error || "An error occurred while liking the post")
       })
       .finally(() => {
-        setActionLoading(prev => ({ ...prev, [`like-${post.id}`]: false }))
+        setActionLoading((prev) => ({ ...prev, [`like-${post.id}`]: false }))
       })
   }
 
@@ -120,7 +129,7 @@ const ListPosts = () => {
       return
     }
 
-    setActionLoading(prev => ({ ...prev, [`dislike-${post.id}`]: true }))
+    setActionLoading((prev) => ({ ...prev, [`dislike-${post.id}`]: true }))
 
     const config = {
       method: "post",
@@ -140,7 +149,7 @@ const ListPosts = () => {
         // If the API returns a single updated post
         if (response.data && response.data.id) {
           const updatedPost = response.data
-          setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p))
+          setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)))
         }
         // If the API returns all posts as an array
         else if (Array.isArray(response.data)) {
@@ -148,20 +157,22 @@ const ListPosts = () => {
         }
         // Fallback to manual update
         else {
-          setPosts(posts.map(p => {
-            if (p.id === post.id) {
-              const wasDisliked = p.user_has_disliked
-              return {
-                ...p,
-                dislike_count: wasDisliked ? p.dislike_count - 1 : p.dislike_count + 1,
-                user_has_disliked: !wasDisliked,
-                // If user is disliking and had previously liked, remove the like
-                like_count: p.user_has_liked ? p.like_count - 1 : p.like_count,
-                user_has_liked: p.user_has_liked ? false : p.user_has_liked,
+          setPosts(
+            posts.map((p) => {
+              if (p.id === post.id) {
+                const wasDisliked = p.user_has_disliked
+                return {
+                  ...p,
+                  dislike_count: wasDisliked ? p.dislike_count - 1 : p.dislike_count + 1,
+                  user_has_disliked: !wasDisliked,
+                  // If user is disliking and had previously liked, remove the like
+                  like_count: p.user_has_liked ? p.like_count - 1 : p.like_count,
+                  user_has_liked: p.user_has_liked ? false : p.user_has_liked,
+                }
               }
-            }
-            return p
-          }))
+              return p
+            }),
+          )
         }
       })
       .catch((error) => {
@@ -169,7 +180,7 @@ const ListPosts = () => {
         alert(error.response?.data?.error || "An error occurred while disliking the post")
       })
       .finally(() => {
-        setActionLoading(prev => ({ ...prev, [`dislike-${post.id}`]: false }))
+        setActionLoading((prev) => ({ ...prev, [`dislike-${post.id}`]: false }))
       })
   }
 
@@ -193,11 +204,17 @@ const ListPosts = () => {
     scrollToTop()
   }
 
-  // Calculate pagination values
+  // Add defensive code to ensure posts is always an array before calling slice
+  const safeSlice = (array, start, end) => {
+    if (!Array.isArray(array)) return []
+    return array.slice(start, end)
+  }
+
+  // Calculate pagination values with defensive code
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
-  const totalPages = Math.ceil(posts.length / postsPerPage)
+  const currentPosts = safeSlice(posts, indexOfFirstPost, indexOfLastPost)
+  const totalPages = Math.ceil((Array.isArray(posts) ? posts.length : 0) / postsPerPage)
 
   if (loading && posts.length === 0) {
     return (
@@ -231,13 +248,12 @@ const ListPosts = () => {
         <p className="blog-description">Explore the latest posts from our community</p>
       </header>
 
-      {posts.length === 0 ? (
+      {!Array.isArray(posts) || posts.length === 0 ? (
         <div className="no-posts">No posts available at the moment.</div>
       ) : (
         <>
           <p>Total Posts: {totalPosts}</p>
           <div className="posts-grid">
-
             {currentPosts.map((post) => (
               <article key={post.id} className="post-card">
                 <div className="post-header">
