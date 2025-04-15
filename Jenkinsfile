@@ -10,7 +10,7 @@ pipeline {
         NODE_VERSION = '20'
         DOCKER_IMAGE = 'frontend'
         AWS_REGION = 'ap-southeast-2'
-        ECR_REPOSITORY = 'taskmaster'
+        ECR_REPOSITORY = '016456419140.dkr.ecr.ap-southeast-2.amazonaws.com/taskmaster'
         IMAGE_TAG = "latest"
     }
 
