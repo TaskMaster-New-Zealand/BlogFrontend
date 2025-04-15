@@ -62,7 +62,7 @@ pipeline {
                     current_stage = env.STAGE_NAME
                     if (isUnix()) {
                         sh '''
-                            npm test -- --coverage
+                            npm test -- --watchAll=false
                         '''
                     } else {
                         bat '''
