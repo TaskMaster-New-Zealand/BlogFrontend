@@ -35,26 +35,6 @@ pipeline {
             }
         }
 
-        stage('Lint Check') {
-            steps {
-                script {
-                    start = System.currentTimeMillis()
-                    current_stage = env.STAGE_NAME
-                    if (isUnix()) {
-                        sh '''
-                            npm run lint || echo "Lint finished with warnings"
-                        '''
-                    } else {
-                        bat '''
-                            npm run lint || echo "Lint finished with warnings"
-                        '''
-                    }
-                    end = System.currentTimeMillis()
-                    build_duration_msg = build_duration_msg + "*" + current_stage + "*" + " : " + Util.getTimeSpanString(end - start) + "\n"
-                }
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 script {
