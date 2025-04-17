@@ -618,7 +618,6 @@
   }
 
   .form-actions {
-    'flex-direction: column;
     gap: 10px;
   }
 }
