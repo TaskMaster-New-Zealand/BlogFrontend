@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { BaseUrl } from "../constants"
 import "./MyPosts.css"
-import { ThumbsUp, ThumbsDown, Calendar, User, ChevronLeft, ChevronRight, X, Edit, Trash } from "lucide-react"
+import { ThumbsUp, ThumbsDown, Calendar, User, ChevronLeft, ChevronRight, X } from "lucide-react"
 
 const MyPosts = () => {
   // Initialize posts as an empty array to prevent "slice is not a function" error
@@ -22,7 +22,6 @@ const MyPosts = () => {
   // Modal state
   const [selectedPost, setSelectedPost] = useState(null)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
 
 
 
@@ -33,11 +32,13 @@ const MyPosts = () => {
       setLoading(false)
       return
     }
-
+  // eslint-disable-next-line
     fetchPosts()
+      // eslint-disable-next-line
   }, [Token])
-
+  // eslint-disable-next-line
   const fetchPosts = () => {
+      // eslint-disable-next-line
     setLoading(true)
     setError(null)
 
@@ -224,42 +225,6 @@ const MyPosts = () => {
   }
 
 
-
-  const handleDeletePost = () => {
-    setActionLoading((prev) => ({ ...prev, delete: true }))
-
-    const config = {
-      method: "delete",
-      url: BaseUrl + "/api/posts/" + selectedPost.slug + "/",
-      headers: {
-        Authorization: "Token " + Token,
-        "Content-Type": "application/json",
-      },
-    }
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log("Delete response:", response.data)
-
-        // Close the modal
-        closeAllModals()
-
-        // Refresh the posts list
-        fetchPosts()
-
-        // Show success message
-        alert("Post deleted successfully!")
-      })
-      .catch((error) => {
-        console.error("Error deleting post:", error)
-        alert(error.response?.data?.error || "An error occurred while deleting the post")
-      })
-      .finally(() => {
-        setActionLoading((prev) => ({ ...prev, delete: false }))
-      })
-  }
-
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" }
     return new Date(dateString).toLocaleDateString(undefined, options)
@@ -286,13 +251,9 @@ const MyPosts = () => {
     document.body.style.overflow = "hidden"
   }
 
-  const openDeleteConfirm = () => {
-    setIsDeleteConfirmOpen(true)
-  }
 
   const closeAllModals = () => {
     setIsViewModalOpen(false)
-    setIsDeleteConfirmOpen(false)
     setSelectedPost(null)
     document.body.style.overflow = "auto"
   }
